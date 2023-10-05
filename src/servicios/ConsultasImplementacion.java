@@ -65,6 +65,7 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 		ResultSet resultadoConsulta = null;
 		ArrayList<LibroDto> listaLibros = new ArrayList<>();
 		ADto aDto = new ADto();
+		Scanner sc = new Scanner(System.in);
 
 		// parametrizacion
 		String consulta = "";
@@ -79,7 +80,8 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 
 			parametro = conexion.prepareStatement(consulta);// envia declaraciones sql parametrizadas
 
-			parametro.setString(1, "narnia");// añade un valor al '?' nº1
+			System.out.print("Que libro quieres ver: ");
+			parametro.setString(1, sc.next());// añade un valor al '?' nº1
 
 			resultadoConsulta = parametro.executeQuery();// ejecuta la query
 
@@ -91,9 +93,14 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 			resultadoConsulta.close();
 			System.out.println(
 					"[INFO] Conexion, declaracion, resultado cerrados [ConsultasImplementacion-seleccionLibros]");
+			
+			System.out.println(listaLibros.get(0).toString());
 
 		} catch (SQLException e) {
 			System.err.println("[ERROR] No se puede lanzar la Query [ConsultasImplementacion-seleccionLibros]");
+		}
+		catch(IndexOutOfBoundsException e) {
+			System.err.println("[ERROR] El libro no existe [ConsultasImplementacion-seleccionLibros]");
 		}
 
 		return listaLibros;
@@ -109,7 +116,7 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 		// DELETE FROM gbp_almacen.gbp_alm_cat_libros WHERE id_libro=?
 
 		Statement declaracionSQL = null;// Solo se puede abrir un objeto ResultSet por cada objeto Statement
-
+		Scanner sc = new Scanner(System.in);
 		// parametrizacion
 		String consulta = "";
 		PreparedStatement parametro = null;// sirve para poder parametrizar consultas
@@ -120,11 +127,12 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 														// base de datos
 
 			// Se define la consulta de la declaración
-			consulta = "DELETE FROM gbp_almacen.gbp_alm_cat_libros WHERE id_libro=?";
+			consulta = "DELETE FROM gbp_almacen.gbp_alm_cat_libros WHERE titulo=?";
 
 			parametro = conexion.prepareStatement(consulta);// envia declaraciones sql parametrizadas
 
-			parametro.setInt(1, 5);
+			System.out.print("Que libro quieres eliminar: ");
+			parametro.setString(1, sc.next());
 
 			parametro.executeUpdate();// ejecuta la query
 			System.out.println("[INFO] Borrado correcto [ConsultasImplementacion-borrarLibros]");
@@ -161,14 +169,13 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 			declaracionSQL = conexion.createStatement();
 
 			// Se define la consulta de la declaración
-			consulta = "UPDATE gbp_almacen.gbp_alm_cat_libros SET edicion=? WHERE titulo=?";
+			consulta = "UPDATE gbp_almacen.gbp_alm_cat_libros SET ?=? WHERE titulo=?";
 
 			parametro = conexion.prepareStatement(consulta);// envia declaraciones sql parametrizadas
-
-			preguntasModificar(parametro);//hace las preguntas y las parametriza
-
-			// ejecuta la query
-
+			
+			preguntasModificar(parametro);
+			
+			parametro.executeUpdate();
 			System.out.println("[INFO] Modificacion terminada [ConsultasImplementacion-modificarLibro]");
 
 			// siempre cerrar la conexion y demas para no sobrecargar el server
@@ -208,6 +215,7 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 
 			parametro = conexion.prepareStatement(consulta);// envia declaraciones sql parametrizadas
 
+			preguntascrear(parametro);			
 			parametro.setString(1, "el campo");
 			parametro.setString(2, "jose");
 			parametro.setInt(3, 92387234);
@@ -252,17 +260,29 @@ public class ConsultasImplementacion implements ConsultasInterfaz {
 			}
 				
 		} while (preguntaSiNo("Quieres modificar otro?[si=1/no=0]: "));
-		parametro.executeUpdate();
 		sc.close();
 
 	}
 
-	private void preguntasMostrar() {
 
-	}
+	private void preguntascrear(PreparedStatement parametro) throws SQLException {
 
-	private void preguntasBorrar() {
-
+		Scanner sc = new Scanner(System.in);
+		
+		do {
+			System.out.print("Introduce el titulo: ");
+			parametro.setString(1, sc.next());
+			
+			System.out.print("Introduce el autor: ");
+			parametro.setString(2, sc.next());
+			
+			System.out.print("Introduce el isbn: ");
+			parametro.setInt(1, sc.nextInt());
+			
+			System.out.print("Introduce la edicion: ");
+			parametro.setInt(1, sc.nextInt());
+		} while (preguntaSiNo("Quieres modificar otro?[si=1/no=0]: "));
+		
 	}
 	
 	

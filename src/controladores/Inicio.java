@@ -37,8 +37,6 @@ public class Inicio {
 					
 				case 2://libro particular
 					listaLibros = consultas.seleccionLibros();
-					System.out.println("----------");
-					System.out.println(listaLibros.get(0).toString());
 					break;
 
 				case 3://modificar
