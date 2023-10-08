@@ -1,0 +1,3 @@
+Don Regino en el metodo [ConsultasImplementacion-crearLibro] se me olvido comentar las lineas 219-222 que era para hacer pruebas
+ 
+tambien podra ver que en [ConsultasImplementacion-preguntascrear/preguntasModificar] el isbn se pasa a la basse de datos como int, porque me equivoque al crear la tabla
